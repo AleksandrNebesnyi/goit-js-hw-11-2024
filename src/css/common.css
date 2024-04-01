@@ -15,63 +15,104 @@ body {
   color: #212121;
   line-height: 1.5;
 }
-
-img {
-  display: block;
-  max-width: 100%;
+p {
+  margin: 0;
 }
 
-
-/* .gallery {
-  display: grid;
-  max-width: 1140px;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  grid-auto-rows: 240px;
-  grid-gap: 12px;
-  justify-content: center;
+.container {
+  max-width: 800px;
   margin-left: auto;
   margin-right: auto;
+  text-align: center;
 }
 
-.gallery__item {
-  position: relative;
+ .gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: 20px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  max-width: calc(100vw - 80px);
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 30px;
+}
+
+.photo-card {
+  height: 450px;
+  overflow: hidden; 
   box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
     0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
 }
 
-.gallery__image:hover {
+.photo-card:hover {
   transform: scale(1.03);
-}  */
+}  
+.gallery img{
+  display: block;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+.info{
+  margin: 0;
+  padding: 20px;
+  font-weight: 500;
+  background-color: #03a9f4;
+}
 
 
-/* .feedback-form {
+.info-item:not(:last-child){
+  margin-bottom:10px ;
+}
+
+/* ----------FORM--------------- */
+ .search-form { 
   display: flex;
-  flex-direction: column;
-  max-width: 480px;
-  padding: 12px;
-  background-color: #fff;
+  justify-content: center;
+  padding: 8px;
+  margin-bottom: 24px;
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 4px;
+  margin-bottom: 20px;
 }
 
-.feedback-form label {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 16px;
-}
-
-.feedback-form button {
-  padding: 8px 12px;
-  font: inherit;
-  cursor: pointer;
-}
-
-input,
-textarea {
+input {
   padding: 8px;
   font: inherit;
 }
+.search-form button {
+ 
+  background-color: aqua;
+  padding: 8px 12px;
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+  margin-left: 15px;
+}
+.search-form button:hover,
+.search-form button:focus {
+background-color: #1976d2;
+}
+.load-more{
+ 
+  display: inline-flex;
+  padding: 12px 32px;
+  border: none;
+  border-radius: 4px;
+  background-color: #2196f3;
+  color: #fff;
+  font-size: inherit;
+  cursor: pointer;
+ 
+}
+.load-more:hover,
+.load-more:focus {
+background-color: #1976d2;
+}
 
-textarea {
-  resize: none;
-} */
+.is-hidden {
+  display: none;
+}

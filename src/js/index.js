@@ -1,20 +1,94 @@
 import Notiflix from 'notiflix';
-import axios from 'axios'
-// axios.defaults.baseURL = 'https://api.example.com';
-// axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+import throttle from 'lodash.throttle';
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
 
-// Notiflix.Notify.success('Sol lucet omnibus');
+import { getImage } from './api-servis';
+import makeCardMarkup from './create-markup';
+import {clearContainer,isHidden,isVisible} from './helpers'
 
-// Notiflix.Notify.failure('Qui timide rogat docet negare');
+const STOREGE_KEY='input-value';
 
-// Notiflix.Notify.warning('Memento te hominem esse');
+const input = document.querySelector('.search-form input');
+const searchBtn= document.querySelector('.search-form button');
+const gallery = document.querySelector('.gallery');
+const loadMoreBtn= document.querySelector('.load-more');
 
-// Notiflix.Notify.info('Cogito ergo sum');
+input.addEventListener('input',throttle(onChangeInput,0));
+searchBtn.addEventListener('click',onBtnPress);
+loadMoreBtn.addEventListener('click',onPressloadMoreBtn);
 
-// Notiflix.Notify.success(
-//   'Click Me',
-//   function cb() {
-//     // callback
-//   },
-// );
+populateInput();
+let query='';
+let page =23;
+
+function onChangeInput (event){ 
+  query=event.currentTarget.value;  
+  localStorage.setItem( STOREGE_KEY,query); 
+};
+
+function onBtnPress(event) {  
+  event.preventDefault();
+  clearContainer(gallery);
+  localStorage.removeItem(STOREGE_KEY);
+  page=1;
+getImgAndCreateMarkup().then(({totalHits})=>{
+  Notiflix.Notify.info(`Hooray! We found ${totalHits} images.`); 
+});
+   input.value='';
+  
+
+};
+
+function populateInput() {
+  const storageData=localStorage.getItem(STOREGE_KEY); 
+  if (storageData) {    
+      input.value=storageData;     
+  }
+};
+
+function onPressloadMoreBtn() { 
+  isHidden(loadMoreBtn);
+  getImgAndCreateMarkup().then(({totalHits,page,hits})=>{
+    const amountOfPages =totalHits/hits.length;
+      if (page>=amountOfPages) {
+       Notiflix.Notify.info(`We're sorry, but you've reached the end of search results.`);
+       isHidden(loadMoreBtn);
+    }
+  });
+}
+
+
+ async function getImgAndCreateMarkup() {
+   await getImage(query,page).then(({hits,totalHits})=>{   
+    gallery.insertAdjacentHTML('beforeend',makeCardMarkup(hits));
+    if(hits.length === 0){
+      Notiflix.Notify.info('Sorry, there are no images matching your search query. Please try again.')
+    }  
+    const {height: cardHeight}= gallery.firstElementChild.getBoundingClientRect();
+    window.scrollBy({
+  top: cardHeight * 2,
+  behavior: "smooth",
+});
+   
+    page +=1;
+    new SimpleLightbox('.gallery a',{
+      captionsData:"alt",
+      captionPosition:"bottom",
+      captionDelay:200,
+    });    
+    isVisible(loadMoreBtn);     
+
+  }).catch((error)=>{
+    console.log(error.message);
+     Notiflix.Notify.failure('Please try again');
+
+  });
+ return {totalHits,page,hits};
+}
+
+
+
+
+;
+
